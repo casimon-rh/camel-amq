@@ -1,7 +1,7 @@
 package com.redhat;
 
-// import org.apache.camel.Exchange;
-// import org.apache.camel.Processor;
+import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.model.dataformat.JsonLibrary;
@@ -40,12 +40,12 @@ public class Routes extends RouteBuilder {
     from("activemq:queue:"+project).unmarshal(new JacksonDataFormat(Fruit.class))
         .to("log:DEBUG?showHeaders=true");
 
-    // from("timer://mytime?fixedRate=true&period=5000")
-    //     .process(new Processor() {
-    //       public void process(Exchange exchange) throws Exception {
-    //         Fruit testFruit = new Fruit("Banana", 10);
-    //         exchange.getIn().setBody(testFruit);
-    //       }
-    //     }).to("direct:newFruit");
+    from("timer://mytime?fixedRate=true&period=5000")
+        .process(new Processor() {
+          public void process(Exchange exchange) throws Exception {
+            Fruit testFruit = new Fruit("Banana", 10);
+            exchange.getIn().setBody(testFruit);
+          }
+        }).to("direct:newFruit");
   }
 }

@@ -1,0 +1,161 @@
+apiVersion: broker.amq.io/v1beta1
+kind: ActiveMQArtemisAddress
+metadata:
+  name: ex-aaoaddress-project1
+  namespace: demo
+spec:
+  addressName: project1
+  queueConfiguration:
+    autoCreateAddress: true
+    durable: true
+    enabled: true
+  queueName: project1
+  routingType: anycast
+
+---
+apiVersion: broker.amq.io/v1beta1
+kind: ActiveMQArtemisAddress
+metadata:
+  name: ex-aaoaddress-project2
+  namespace: demo
+spec:
+  addressName: project2
+  queueConfiguration:
+    autoCreateAddress: true
+    durable: true
+    enabled: true
+  queueName: project2
+  routingType: anycast
+
+---
+apiVersion: broker.amq.io/v1beta1
+kind: ActiveMQArtemis
+metadata:
+  name: ex-aao
+  namespace: demo
+spec:
+  acceptors:
+    - bindToAllInterfaces: true
+      name: all
+      port: 61617
+      protocols: 'CORE,AMQP,STOMP,HORNETQ,MQTT,OPENWIRE'
+      sslEnabled: false
+  adminPassword: redhat
+  adminUser: redhat
+  deploymentPlan:
+    size: 3
+    persistenceEnabled: true
+    requireLogin: true
+    messageMigration: false
+    managementRBACEnabled: true
+    journalType: nio
+    jolokiaAgentEnabled: false
+    image: placeholder
+    storage:
+      size: 100G
+      storageClassName: ocs-external-storagecluster-ceph-rbd
+---
+apiVersion: broker.amq.io/v1beta1
+kind: ActiveMQArtemisSecurity
+metadata:
+  name: ex-prop
+  namespace: demo
+spec:
+  loginModules:
+    propertiesLoginModules:
+      - name: prop-module
+        users:
+          - name: redhat
+            password: redhat
+            roles:
+              - admin
+          - name: qa
+            password: qa
+            roles:
+              - qa
+          - name: dev1
+            password: dev1
+            roles:
+              - dev1
+          - name: dev2
+            password: dev2
+            roles:
+              - dev2
+  securityDomains:
+    brokerDomain:
+      loginModules:
+        - flag: sufficient
+          name: prop-module
+      name: activemq
+  securitySettings:
+    broker:
+      - match: project1
+        permissions:
+          - operationType: consume
+            roles:
+              - qa
+              - dev1
+              - admin
+          - operationType: createDurableQueue
+            roles:
+              - dev1
+              - admin
+          - operationType: createNonDurableQueue
+            roles:
+              - dev1
+              - admin
+          - operationType: send
+            roles:
+              - dev1
+              - admin
+      - match: project2
+        permissions:
+          - operationType: consume
+            roles:
+              - qa
+              - dev2
+              - admin
+          - operationType: createNonDurableQueue
+            roles:
+              - dev2
+              - admin
+          - operationType: createDurableQueue
+            roles:
+              - dev2
+              - admin
+          - operationType: send
+            roles:
+              - dev2
+              - admin
+      - match: ActiveMQ#
+        permissions:
+          - operationType: consume
+            roles:
+              - dev1
+              - dev2
+              - qa
+              - admin
+          - operationType: createNonDurableQueue
+            roles:
+              - dev1
+              - dev2
+              - qa
+              - admin
+          - operationType: createDurableQueue
+            roles:
+              - dev1
+              - dev2
+              - qa
+              - admin
+          - operationType: createAddress
+            roles:
+              - dev1
+              - dev2
+              - qa
+              - admin
+          - operationType: send
+            roles:
+              - dev1
+              - dev2
+              - qa
+              - admin

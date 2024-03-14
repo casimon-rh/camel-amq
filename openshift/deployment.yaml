@@ -23,12 +23,6 @@ spec:
             - containerPort: 8443
               protocol: TCP
           env:
-            - name: QUARKUS_DB_URL
-              value: 'jdbc:oracle:thin:@oracledb.user1.svc.cluster.local:1521/XEPDB1'
-            - name: QUARKUS_DB_PAS
-              value: redhat
-            - name: QUARKUS_DB_USR
-              value: sys as sysdba
             - name: QUARKUS_BROKER_URL
               value: 'tcp://ex-aao-hdls-svc.user1.svc.cluster.local:61616'
           resources: {}

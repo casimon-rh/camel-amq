@@ -3,14 +3,14 @@ package com.redhat;
 import java.util.Objects;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.NamedQuery;
+// import jakarta.persistence.Entity;
+// import jakarta.persistence.Id;
+// import jakarta.persistence.NamedQuery;
 
 @RegisterForReflection
-@Entity(name = "fruit")
-@NamedQuery(name = "findAll", query = "SELECT b FROM fruit b")
-@NamedQuery(name = "findById", query = "SELECT b FROM fruit b where b.id = :id")
+// @Entity(name = "fruit")
+// @NamedQuery(name = "findAll", query = "SELECT b FROM fruit b")
+// @NamedQuery(name = "findById", query = "SELECT b FROM fruit b where b.id = :id")
 public class Fruit{
   private String name;
   private int id;
@@ -30,7 +30,7 @@ public class Fruit{
   public void setName(String _name) {
     this.name = _name;
   }
-  @Id
+  // @Id
   public int getId() {
     return id;
   }

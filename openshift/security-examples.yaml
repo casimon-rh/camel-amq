@@ -1,0 +1,158 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: redhat-project1
+  namespace: demo
+  annotations:
+    image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"camel-amq:latest","namespace":"demo"},"fieldPath":"spec.template.spec.containers[?(@.name==\"camel-amq\")].image"}]'
+  labels:
+    app: redhat-project1
+    app.kubernetes.io/component: redhat-project1
+    app.kubernetes.io/instance: redhat-project1
+    app.kubernetes.io/name: redhat-project1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment: redhat-project1
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        deployment: redhat-project1
+    spec:
+      containers:
+        - name: redhat-project1
+          image: 'image-registry.openshift-image-registry.svc:5000/demo/camel-amq@sha256:104e603dc222dba0f3af4ab6f4e2244a9561e456aac68951d0dd79524574eb5b'
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: QUARKUS_BROKER_URL
+              value: 'tcp://amq-svc:61617'
+            - name: QUARKUS_BROKER_USER
+              value: redhat
+            - name: QUARKUS_BROKER_PASS
+              value: redhat
+            - name: QUARKUS_CUSTOM_PROJECT
+              value: project1
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: dev1-project2
+  namespace: demo
+  annotations:
+    image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"camel-amq:latest","namespace":"demo"},"fieldPath":"spec.template.spec.containers[?(@.name==\"camel-amq\")].image"}]'
+  labels:
+    app: dev1-project2
+    app.kubernetes.io/component: dev1-project2
+    app.kubernetes.io/instance: dev1-project2
+    app.kubernetes.io/name: dev1-project2
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      deployment: dev1-project2
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        deployment: dev1-project2
+    spec:
+      containers:
+        - name: dev1-project2
+          image: 'image-registry.openshift-image-registry.svc:5000/demo/camel-amq@sha256:104e603dc222dba0f3af4ab6f4e2244a9561e456aac68951d0dd79524574eb5b'
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: QUARKUS_BROKER_URL
+              value: 'tcp://amq-svc:61617'
+            - name: QUARKUS_BROKER_USER
+              value: dev1
+            - name: QUARKUS_BROKER_PASS
+              value: dev1
+            - name: QUARKUS_CUSTOM_PROJECT
+              value: project2
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  annotations:
+    image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"camel-amq-lectura:latest","namespace":"demo"},"fieldPath":"spec.template.spec.containers[?(@.name==\"camel-amq-lectura\")].image"}]'
+  name: qa-project2
+  namespace: demo
+  labels:
+    app: qa-project2
+    app.kubernetes.io/component: qa-project2
+    app.kubernetes.io/instance: qa-project2
+    app.kubernetes.io/name: qa-project2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment: qa-project2
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        deployment: qa-project2
+    spec:
+      containers:
+        - name: qa-project2
+          image: 'image-registry.openshift-image-registry.svc:5000/demo/camel-amq-lectura@sha256:52e7eabfbaa6e70fc258c08a3b90b098d589b04285b890683e02977a5ff2e85b'
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: QUARKUS_BROKER_URL
+              value: 'tcp://amq-svc:61617'
+            - name: QUARKUS_BROKER_USER
+              value: qa
+            - name: QUARKUS_BROKER_PASS
+              value: qa
+            - name: QUARKUS_CUSTOM_PROJECT
+              value: project2
+
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: dev2-project2
+  namespace: demo
+  annotations:
+    image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"camel-amq:latest","namespace":"demo"},"fieldPath":"spec.template.spec.containers[?(@.name==\"camel-amq\")].image"}]'
+  labels:
+    app: dev2-project2
+    app.kubernetes.io/component: dev2-project2
+    app.kubernetes.io/instance: dev2-project2
+    app.kubernetes.io/name: dev2-project2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment: dev2-project2
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        deployment: dev2-project2
+    spec:
+      containers:
+        - name: dev2-project2
+          image: 'image-registry.openshift-image-registry.svc:5000/demo/camel-amq@sha256:104e603dc222dba0f3af4ab6f4e2244a9561e456aac68951d0dd79524574eb5b'
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: QUARKUS_BROKER_URL
+              value: 'tcp://amq-svc:61617'
+            - name: QUARKUS_BROKER_USER
+              value: dev2
+            - name: QUARKUS_BROKER_PASS
+              value: dev2
+            - name: QUARKUS_CUSTOM_PROJECT
+              value: project2

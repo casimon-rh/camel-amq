@@ -1,0 +1,2 @@
+#!/bin/sh
+docker run --rm -p 8090:8090 -p 8080:8080 -e QUARKUS_DB_URL=jdbc:oracle:thin:@172.17.0.3:1521/XEPDB1 -e  QUARKUS_DB_PAS=redhat -e QUARKUS_DB_USR='sys as sysdba' -e QUARKUS_BROKER_URL=tcp://localhost:61617 -it jms-example
